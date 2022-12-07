@@ -60,3 +60,5 @@ fixtures/contracts-addresses/*
 cache
 build
 out
+cmd.txt
+hardhat.config.js

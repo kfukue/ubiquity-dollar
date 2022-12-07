@@ -1574,7 +1574,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nomicfoundation/ethereumjs-vm@npm:^6.0.0-rc.3":
+"@nomicfoundation/ethereumjs-vm@npm:^6.0.0, @nomicfoundation/ethereumjs-vm@npm:^6.0.0-rc.3":
   version: 6.0.0
   resolution: "@nomicfoundation/ethereumjs-vm@npm:6.0.0"
   dependencies:
@@ -1605,9 +1605,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@nomicfoundation/solidity-analyzer-darwin-arm64@npm:0.1.0":
+  version: 0.1.0
+  resolution: "@nomicfoundation/solidity-analyzer-darwin-arm64@npm:0.1.0"
+  conditions: os=darwin & cpu=arm64
+  languageName: node
+  linkType: hard
+
 "@nomicfoundation/solidity-analyzer-darwin-x64@npm:0.0.3":
   version: 0.0.3
   resolution: "@nomicfoundation/solidity-analyzer-darwin-x64@npm:0.0.3"
+  conditions: os=darwin & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@nomicfoundation/solidity-analyzer-darwin-x64@npm:0.1.0":
+  version: 0.1.0
+  resolution: "@nomicfoundation/solidity-analyzer-darwin-x64@npm:0.1.0"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
@@ -1619,9 +1633,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@nomicfoundation/solidity-analyzer-freebsd-x64@npm:0.1.0":
+  version: 0.1.0
+  resolution: "@nomicfoundation/solidity-analyzer-freebsd-x64@npm:0.1.0"
+  conditions: os=freebsd & cpu=x64
+  languageName: node
+  linkType: hard
+
 "@nomicfoundation/solidity-analyzer-linux-arm64-gnu@npm:0.0.3":
   version: 0.0.3
   resolution: "@nomicfoundation/solidity-analyzer-linux-arm64-gnu@npm:0.0.3"
+  conditions: os=linux & cpu=arm64 & libc=glibc
+  languageName: node
+  linkType: hard
+
+"@nomicfoundation/solidity-analyzer-linux-arm64-gnu@npm:0.1.0":
+  version: 0.1.0
+  resolution: "@nomicfoundation/solidity-analyzer-linux-arm64-gnu@npm:0.1.0"
   conditions: os=linux & cpu=arm64 & libc=glibc
   languageName: node
   linkType: hard
@@ -1633,9 +1661,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@nomicfoundation/solidity-analyzer-linux-arm64-musl@npm:0.1.0":
+  version: 0.1.0
+  resolution: "@nomicfoundation/solidity-analyzer-linux-arm64-musl@npm:0.1.0"
+  conditions: os=linux & cpu=arm64 & libc=musl
+  languageName: node
+  linkType: hard
+
 "@nomicfoundation/solidity-analyzer-linux-x64-gnu@npm:0.0.3":
   version: 0.0.3
   resolution: "@nomicfoundation/solidity-analyzer-linux-x64-gnu@npm:0.0.3"
+  conditions: os=linux & cpu=x64 & libc=glibc
+  languageName: node
+  linkType: hard
+
+"@nomicfoundation/solidity-analyzer-linux-x64-gnu@npm:0.1.0":
+  version: 0.1.0
+  resolution: "@nomicfoundation/solidity-analyzer-linux-x64-gnu@npm:0.1.0"
   conditions: os=linux & cpu=x64 & libc=glibc
   languageName: node
   linkType: hard
@@ -1647,9 +1689,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@nomicfoundation/solidity-analyzer-linux-x64-musl@npm:0.1.0":
+  version: 0.1.0
+  resolution: "@nomicfoundation/solidity-analyzer-linux-x64-musl@npm:0.1.0"
+  conditions: os=linux & cpu=x64 & libc=musl
+  languageName: node
+  linkType: hard
+
 "@nomicfoundation/solidity-analyzer-win32-arm64-msvc@npm:0.0.3":
   version: 0.0.3
   resolution: "@nomicfoundation/solidity-analyzer-win32-arm64-msvc@npm:0.0.3"
+  conditions: os=win32 & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"@nomicfoundation/solidity-analyzer-win32-arm64-msvc@npm:0.1.0":
+  version: 0.1.0
+  resolution: "@nomicfoundation/solidity-analyzer-win32-arm64-msvc@npm:0.1.0"
   conditions: os=win32 & cpu=arm64
   languageName: node
   linkType: hard
@@ -1661,9 +1717,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@nomicfoundation/solidity-analyzer-win32-ia32-msvc@npm:0.1.0":
+  version: 0.1.0
+  resolution: "@nomicfoundation/solidity-analyzer-win32-ia32-msvc@npm:0.1.0"
+  conditions: os=win32 & cpu=ia32
+  languageName: node
+  linkType: hard
+
 "@nomicfoundation/solidity-analyzer-win32-x64-msvc@npm:0.0.3":
   version: 0.0.3
   resolution: "@nomicfoundation/solidity-analyzer-win32-x64-msvc@npm:0.0.3"
+  conditions: os=win32 & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@nomicfoundation/solidity-analyzer-win32-x64-msvc@npm:0.1.0":
+  version: 0.1.0
+  resolution: "@nomicfoundation/solidity-analyzer-win32-x64-msvc@npm:0.1.0"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
@@ -1704,6 +1774,45 @@ __metadata:
     "@nomicfoundation/solidity-analyzer-win32-x64-msvc":
       optional: true
   checksum: dd3e1e6aa75716eb22f256be06d6a4d808ef732f77c26b4489ae8f9508271799d555dff547cf037373b0974d892b4cc7f78bc4ea5027eee8561e4dd394fe61ac
+  languageName: node
+  linkType: hard
+
+"@nomicfoundation/solidity-analyzer@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "@nomicfoundation/solidity-analyzer@npm:0.1.0"
+  dependencies:
+    "@nomicfoundation/solidity-analyzer-darwin-arm64": 0.1.0
+    "@nomicfoundation/solidity-analyzer-darwin-x64": 0.1.0
+    "@nomicfoundation/solidity-analyzer-freebsd-x64": 0.1.0
+    "@nomicfoundation/solidity-analyzer-linux-arm64-gnu": 0.1.0
+    "@nomicfoundation/solidity-analyzer-linux-arm64-musl": 0.1.0
+    "@nomicfoundation/solidity-analyzer-linux-x64-gnu": 0.1.0
+    "@nomicfoundation/solidity-analyzer-linux-x64-musl": 0.1.0
+    "@nomicfoundation/solidity-analyzer-win32-arm64-msvc": 0.1.0
+    "@nomicfoundation/solidity-analyzer-win32-ia32-msvc": 0.1.0
+    "@nomicfoundation/solidity-analyzer-win32-x64-msvc": 0.1.0
+  dependenciesMeta:
+    "@nomicfoundation/solidity-analyzer-darwin-arm64":
+      optional: true
+    "@nomicfoundation/solidity-analyzer-darwin-x64":
+      optional: true
+    "@nomicfoundation/solidity-analyzer-freebsd-x64":
+      optional: true
+    "@nomicfoundation/solidity-analyzer-linux-arm64-gnu":
+      optional: true
+    "@nomicfoundation/solidity-analyzer-linux-arm64-musl":
+      optional: true
+    "@nomicfoundation/solidity-analyzer-linux-x64-gnu":
+      optional: true
+    "@nomicfoundation/solidity-analyzer-linux-x64-musl":
+      optional: true
+    "@nomicfoundation/solidity-analyzer-win32-arm64-msvc":
+      optional: true
+    "@nomicfoundation/solidity-analyzer-win32-ia32-msvc":
+      optional: true
+    "@nomicfoundation/solidity-analyzer-win32-x64-msvc":
+      optional: true
+  checksum: 42dc5ba40e76bf14945fb6a423554bbbc6c99596675065d7d6f3c9a49ec39e37f3f77ecfedcf906fdb1bb33b033a5d92a90c645c886d6ff23334c8af8b14ff67
   languageName: node
   linkType: hard
 
@@ -2446,6 +2555,7 @@ __metadata:
     eslint-config-prettier: ^8.5.0
     eslint-plugin-prettier: ^4.2.1
     eslint-plugin-tsc: ^2.0.0
+    hardhat: ^2.12.3
     lint-staged: ^13.0.3
     nodemon: ^2.0.19
     rimraf: 3.0.2
@@ -5953,6 +6063,74 @@ __metadata:
   bin:
     hardhat: internal/cli/cli.js
   checksum: fc35526bcc2fd44fba38bfe7dd7049e9771f860f6d804c2505188c610f9562f674601260f704254de757442cbcf3e0225be45020a4b8c46c6cbe68fd6da0976b
+  languageName: node
+  linkType: hard
+
+"hardhat@npm:^2.12.3":
+  version: 2.12.3
+  resolution: "hardhat@npm:2.12.3"
+  dependencies:
+    "@ethersproject/abi": ^5.1.2
+    "@metamask/eth-sig-util": ^4.0.0
+    "@nomicfoundation/ethereumjs-block": ^4.0.0
+    "@nomicfoundation/ethereumjs-blockchain": ^6.0.0
+    "@nomicfoundation/ethereumjs-common": ^3.0.0
+    "@nomicfoundation/ethereumjs-evm": ^1.0.0
+    "@nomicfoundation/ethereumjs-rlp": ^4.0.0
+    "@nomicfoundation/ethereumjs-statemanager": ^1.0.0
+    "@nomicfoundation/ethereumjs-trie": ^5.0.0
+    "@nomicfoundation/ethereumjs-tx": ^4.0.0
+    "@nomicfoundation/ethereumjs-util": ^8.0.0
+    "@nomicfoundation/ethereumjs-vm": ^6.0.0
+    "@nomicfoundation/solidity-analyzer": ^0.1.0
+    "@sentry/node": ^5.18.1
+    "@types/bn.js": ^5.1.0
+    "@types/lru-cache": ^5.1.0
+    abort-controller: ^3.0.0
+    adm-zip: ^0.4.16
+    aggregate-error: ^3.0.0
+    ansi-escapes: ^4.3.0
+    chalk: ^2.4.2
+    chokidar: ^3.4.0
+    ci-info: ^2.0.0
+    debug: ^4.1.1
+    enquirer: ^2.3.0
+    env-paths: ^2.2.0
+    ethereum-cryptography: ^1.0.3
+    ethereumjs-abi: ^0.6.8
+    find-up: ^2.1.0
+    fp-ts: 1.19.3
+    fs-extra: ^7.0.1
+    glob: 7.2.0
+    immutable: ^4.0.0-rc.12
+    io-ts: 1.10.4
+    keccak: ^3.0.2
+    lodash: ^4.17.11
+    mnemonist: ^0.38.0
+    mocha: ^10.0.0
+    p-map: ^4.0.0
+    qs: ^6.7.0
+    raw-body: ^2.4.1
+    resolve: 1.17.0
+    semver: ^6.3.0
+    solc: 0.7.3
+    source-map-support: ^0.5.13
+    stacktrace-parser: ^0.1.10
+    tsort: 0.0.1
+    undici: ^5.4.0
+    uuid: ^8.3.2
+    ws: ^7.4.6
+  peerDependencies:
+    ts-node: "*"
+    typescript: "*"
+  peerDependenciesMeta:
+    ts-node:
+      optional: true
+    typescript:
+      optional: true
+  bin:
+    hardhat: internal/cli/cli.js
+  checksum: 38cf169787aa640ecb7c0d50170ba7064ae8ccd8adc07f6b97294c1c76bda8df96e79deb1e2608cdf7adde4f73b7c555068ab705fd271cc875a771be449848f2
   languageName: node
   linkType: hard
 

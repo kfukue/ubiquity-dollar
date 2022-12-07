@@ -135,7 +135,7 @@ const Token = ({ balance, token, tokenAddr, accountAddr, decimals = 18 }: TokenI
   );
 };
 
-const tokenSvg = {
+export const tokenSvg = {
   uAD: () => icons.SVGs.uad,
   uCR: () => icons.SVGs.ucr,
   "uCR-NFT": () => icons.SVGs.ucrNft,

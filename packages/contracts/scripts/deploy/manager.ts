@@ -9,6 +9,7 @@ import couponsForDollarsCalculatorFunc, { optionDefinitions as couponsForDollars
 import curveUADIncentiveFunc, { optionDefinitions as curveUADIncentiveOptions } from "./dollar/CurveUADIncentive";
 import debtCouponFunc, { optionDefinitions as debtCouponOptions } from "./dollar/DebtCoupon";
 import debtCouponManagerFunc, { optionDefinitions as debtCouponManagerOptions } from "./dollar/DebtCouponManager";
+import directGovernanceFarmerFunc, { optionDefinitions as directGovernanceFarmerOptions } from "./dollar/DirectGovernanceFarmer";
 import dollarMintingCalculatorFunc, { optionDefinitions as dollarMintingCalculatorOptions } from "./dollar/DollarMintingCalculator";
 import excessDollarsDistributorFunc, { optionDefinitions as excessDollarsDistributorOptions } from "./dollar/ExcessDollarDistributor";
 import masterChefFunc, { optionDefinitions as masterChefOptions } from "./dollar/MasterChef";
@@ -57,6 +58,10 @@ export const DEPLOY_FUNCS: Record<string, { handler: DeployFuncCallback; options
   DebtCouponManager: {
     handler: debtCouponManagerFunc,
     options: debtCouponManagerOptions,
+  },
+  DirectGovernanceFarmer: {
+    handler: directGovernanceFarmerFunc,
+    options: directGovernanceFarmerOptions,
   },
   DollarMintingCalculator: {
     handler: dollarMintingCalculatorFunc,

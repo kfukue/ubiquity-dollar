@@ -8,11 +8,13 @@ import withLoadedContext, { LoadedContext } from "@/lib/withLoadedContext";
 // Contracts: bonding, metaPool, bondingToken, masterChef
 
 import DepositShare from "./DepositShare";
-import useBalances from "../lib/hooks/useBalances";
+import useBalances, { Balances } from "../lib/hooks/useBalances";
 import useTransactionLogger from "../lib/hooks/useTransactionLogger";
 import Button from "../ui/Button";
 import Icon from "../ui/Icon";
 import Loading from "../ui/Loading";
+
+import { useEffect } from "react";
 
 type ShareData = {
   id: number;
@@ -33,6 +35,9 @@ type Model = {
   shares: ShareData[];
   totalShares: BigNumber;
   walletLpBalance: BigNumber;
+  walletDaiBalance: BigNumber;
+  walletUsdcBalance: BigNumber;
+  walletUsdtBalance: BigNumber;
   processing: boolean;
 };
 
@@ -45,21 +50,29 @@ type Actions = {
 const USD_TO_LP = 0.7460387929;
 const LP_TO_USD = 1 / USD_TO_LP;
 
-export const BondingSharesExplorerContainer = ({ managedContracts, web3Provider, walletAddress, signer }: LoadedContext) => {
+export const BondingSharesExplorerContainer = ({ managedContracts, namedContracts, web3Provider, walletAddress, signer }: LoadedContext) => {
   const [model, setModel] = useState<Model | null>(null);
   const [, doTransaction] = useTransactionLogger();
-  const [, refreshBalances] = useBalances();
+  const [balances, refreshBalances] = useBalances();
 
   const { staking: bonding, masterChef, stakingToken: bondingToken, dollarMetapool: metaPool } = managedContracts;
+  const { usdc: usdcContract, usdt: usdtContract, dai: daiContract } = namedContracts;
+
+  const [ctr, setCtr] = useState<number>(1);
 
   useAsyncInit(fetchSharesInformation);
   async function fetchSharesInformation() {
+    console.log(`calling fetchSharesInformation ctr : ${ctr}`);
+    setCtr(ctr + 1);
     console.time("BondingShareExplorerContainer contract loading");
     const currentBlock = await web3Provider.getBlockNumber();
     const blockCountInAWeek = +(await bonding.blockCountInAWeek()).toString();
     const totalShares = await masterChef.totalShares();
     const bondingShareIds = await bondingToken.holderTokens(walletAddress);
     const walletLpBalance = await metaPool.balanceOf(walletAddress);
+    const walletUsdcBalance = await usdcContract.balanceOf(walletAddress);
+    const walletUsdtBalance = await usdtContract.balanceOf(walletAddress);
+    const walletDaiBalance = await daiContract.balanceOf(walletAddress);
 
     const shares: ShareData[] = [];
     await Promise.all(
@@ -81,11 +94,14 @@ export const BondingSharesExplorerContainer = ({ managedContracts, web3Provider,
         }
       })
     );
+    // console.log(`call before refresh`);
 
+    // console.log(`call after refresh`);
     const sortedShares = shares.sort((a, b) => a.id - b.id);
-
+    // refreshBalances();
     console.timeEnd("BondingShareExplorerContainer contract loading");
-    setModel({ processing: false, shares: sortedShares, totalShares, walletLpBalance });
+    // console.log(`balances : ${JSON.stringify(balances)} walletLpBalance :${walletLpBalance} usdc : ${usdcBalance} usdt: ${usdtBalance} dai : ${daiBalance}`);
+    setModel({ processing: false, shares: sortedShares, totalShares, walletLpBalance, walletUsdcBalance, walletUsdtBalance, walletDaiBalance });
   }
 
   function allLpAmount(id: number): BigNumber {
@@ -165,7 +181,18 @@ export const BondingSharesExplorer = memo(({ model, actions }: { model: Model | 
   return <>{model ? <BondingSharesInformation {...model} {...actions} /> : <Loading text="Loading existing shares information" />}</>;
 });
 
-export const BondingSharesInformation = ({ shares, totalShares, onWithdrawLp, onClaimUbq, onStake, processing, walletLpBalance }: Model & Actions) => {
+export const BondingSharesInformation = ({
+  shares,
+  totalShares,
+  onWithdrawLp,
+  onClaimUbq,
+  onStake,
+  processing,
+  walletLpBalance,
+  walletDaiBalance,
+  walletUsdcBalance,
+  walletUsdtBalance,
+}: Model & Actions) => {
   const totalUserShares = shares.reduce((sum, val) => {
     return sum.add(val.sharesBalance);
   }, BigNumber.from(0));
@@ -182,7 +209,14 @@ export const BondingSharesInformation = ({ shares, totalShares, onWithdrawLp, on
 
   return (
     <div>
-      <DepositShare onStake={onStake} disabled={processing} maxLp={walletLpBalance} />
+      <DepositShare
+        onStake={onStake}
+        disabled={processing}
+        maxLp={walletLpBalance}
+        maxDai={walletDaiBalance}
+        maxUsdc={walletUsdcBalance}
+        maxUsdt={walletUsdtBalance}
+      />
       <table id="Staking">
         <thead>
           <tr>
