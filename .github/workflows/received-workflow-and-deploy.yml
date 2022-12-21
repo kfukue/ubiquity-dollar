@@ -8,7 +8,7 @@ on:
 
 jobs:
   receive-pr-and-deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     env:
       NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
@@ -22,7 +22,7 @@ jobs:
           node-version: "18"
 
       - name: "Download artifact"
-        uses: actions/github-script@v3.1.0
+        uses: actions/github-script@v6.3.3
         with:
           script: |
             const fs = require("fs");
