@@ -21,6 +21,7 @@ import ICurveFactory from "@ubiquity/contracts/out/ICurveFactory.sol/ICurveFacto
 import BondingShareV2 from "@ubiquity/contracts/out/BondingShareV2.sol/BondingShareV2.json";
 import BondingV2 from "@ubiquity/contracts/out/BondingV2.sol/BondingV2.json";
 import DebtCoupon from "@ubiquity/contracts/out/DebtCoupon.sol/DebtCoupon.json";
+import DirectGovernanceFarmer from "@ubiquity/contracts/out/DirectGovernanceFarmer.sol/DirectGovernanceFarmer.json";
 import DollarMintingCalculator from "@ubiquity/contracts/out/DollarMintingCalculator.sol/DollarMintingCalculator.json";
 import ICouponsForDollarsCalculator from "@ubiquity/contracts/out/ICouponsForDollarsCalculator.sol/ICouponsForDollarsCalculator.json";
 import IMetaPool from "@ubiquity/contracts/out/IMetaPool.sol/IMetaPool.json";
@@ -35,6 +36,15 @@ import UbiquityFormulas from "@ubiquity/contracts/out/UbiquityFormulas.sol/Ubiqu
 import UBQ from "@ubiquity/contracts/out/UbiquityGovernance.sol/UbiquityGovernance.json";
 
 const getContract = (abi: ContractInterface, address: string, provider: ethers.providers.Provider) => {
+  if (address === "0x2d13826359803522cce7a4cfa2c1b582303dd0b4") {
+    // console.log(`in get Contract ${JSON.stringify(abi)}`);
+    const test = new ethers.Contract(address, abi, provider);
+    console.log(`in getContract : ${test}`);
+  }
+  if (address === "0x0F644658510c95CB46955e55D7BA9DDa9E9fBEc6") {
+    // console.log(` uad in get Contract ${JSON.stringify(abi)}`);
+  }
+
   return new ethers.Contract(address, abi, provider);
 };
 
@@ -106,6 +116,9 @@ export const getTWAPOracleContract = (address: string, provider: ethers.provider
   return getContract(TWAPOracle.abi, address, provider);
 };
 
+export const getDirectGovernanceFarmerContract = (address: string, provider: ethers.providers.Provider) => {
+  return getContract(DirectGovernanceFarmer.abi, address, provider);
+};
 export const getDollarMintingCalculatorContract = (address: string, provider: ethers.providers.Provider) => {
   return getContract(DollarMintingCalculator.abi, address, provider);
 };

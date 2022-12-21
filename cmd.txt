@@ -1,0 +1,34 @@
+ yarn workspace @ubiquity/contracts deploy DirectGovernanceFarmer --manager 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266  --network localhost
+
+
+ yarn hardhat --network localhost faucet --receiver 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266 --manager 0x4DA97a8b831C345dBe6d16FF7432DF2b7b776d98
+
+
+forge test --match-path test/dollar/DirectGovernanceFarmer.t.sol
+
+npx hardhat node
+
+yarn workspace @ubiquity/dapp start
+yarn hardhat --network localhost 
+
+npx hardhat run --network localhost scripts/deploy/deploy.ts
+
+yarn hardhat run scripts/hardhat-transfer-script.js
+
+
+yarn workspace @ubiquity/contracts deploy DirectGovernanceFarmer --manager 0x4DA97a8b831C345dBe6d16FF7432DF2b7b776d98  --network mainnet  
+
+yarn workspace @ubiquity/contracts deploy DirectGovernanceFarmer --manager 0x4DA97a8b831C345dBe6d16FF7432DF2b7b776d98 --base3Pool 0x20955CB69Ae1515962177D164dfC9522feef567E --depositZap 0xA79828DF1850E8a3A3064576f380D90aECDD3359 --network mainnet  
+
+
+forge create --rpc-url http://127.0.0.1:8545 --private-key 0x4454691749f69f1224e443731757b75005d0335d38cd3900d7f74e64625c6091 src/dollar/DirectGovernanceFarmer.sol:DirectGovernanceFarmer --constructor-args "0x4DA97a8b831C345dBe6d16FF7432DF2b7b776d98"  "0x20955CB69Ae1515962177D164dfC9522feef567E" 
+"0xA79828DF1850E8a3A3064576f380D90aECDD3359"
+
+yarn workspace @ubiquity/contracts run build
+
+yarn workspace @ubiquity/contracts test
+
+ forge test --match-path test/dollar/DirectGovernanceFarmer.t.sol
+
+
+ yarn workspace @ubiquity/contracts deploy DirectGovernanceFarmer --manager 0x4DA97a8b831C345dBe6d16FF7432DF2b7b776d98  --network mainnet  

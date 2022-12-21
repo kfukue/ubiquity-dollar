@@ -55,21 +55,37 @@ async function calculateApyForWeeks(contracts: NonNullable<ManagedContracts>, pr
 // }
 
 type DepositShareProps = {
-  onStake: ({ amount, weeks }: { amount: BigNumber; weeks: BigNumber }) => void;
+  onStake: ({
+    amountDai,
+    amountLp,
+    amountUsdc,
+    amountUsdt,
+    amountDollar,
+    weeks,
+  }: {
+    amountDai: BigNumber;
+    amountLp: BigNumber;
+    amountUsdc: BigNumber;
+    amountUsdt: BigNumber;
+    amountDollar: BigNumber;
+    weeks: BigNumber;
+  }) => void;
   disabled: boolean;
   maxLp: BigNumber;
   maxDai: BigNumber;
   maxUsdc: BigNumber;
   maxUsdt: BigNumber;
+  maxDollar: BigNumber;
 } & LoadedContext;
 
-const DepositShare = ({ onStake, disabled, maxLp, maxDai, maxUsdc, maxUsdt, managedContracts: contracts }: DepositShareProps) => {
+const DepositShare = ({ onStake, disabled, maxLp, maxDai, maxUsdc, maxUsdt, maxDollar, managedContracts: contracts }: DepositShareProps) => {
   const [amount, setAmount] = useState("");
   const [amountLp, setAmountLp] = useState("");
 
   const [amountTokenDai, setAmountTokenDai] = useState("");
   const [amountTokenUsdt, setAmountTokenUsdt] = useState("");
   const [amountTokenUsdc, setAmountTokenUsdc] = useState("");
+  const [amountTokenDollar, setAmountTokenDollar] = useState("");
 
   const [weeks, setWeeks] = useState("");
   const [currentApy, setCurrentApy] = useState<number | null>(null);
@@ -88,26 +104,31 @@ const DepositShare = ({ onStake, disabled, maxLp, maxDai, maxUsdc, maxUsdt, mana
   const onSetAmountTokenUsdt = (amount: string) => {
     setAmountTokenUsdt(amount);
   };
+  const onSetAmountTokenDollar = (amount: string) => {
+    setAmountTokenDollar(amount);
+  };
   function validateAmount(): string | null {
     let msg = "";
     // if (amount) {
     //   const amountBig = ethers.utils.parseEther(amount);
     //   if (amountBig.gt(maxLp)) return `You don't have enough uAD-3CRV tokens`;
     // }
-    if (amountLp) {
+    if (amountLp !== "") {
       msg += validateTokenAmount(amountLp, 18, maxLp, "uAD-3CRV");
     }
-    if (amountTokenDai) {
+    if (amountTokenDai !== "") {
       msg += validateTokenAmount(amountTokenDai, 18, maxDai, "DAI");
     }
-    if (amountTokenUsdc) {
+    if (amountTokenUsdc !== "") {
       msg += validateTokenAmount(amountTokenUsdc, 6, maxUsdc, "USDC");
     }
-    if (amountTokenUsdt) {
+    if (amountTokenUsdt !== "") {
       msg += validateTokenAmount(amountTokenUsdt, 6, maxUsdt, "USDT");
     }
-
-    return msg;
+    if (amountTokenDollar != "") {
+      msg += validateTokenAmount(amountTokenDollar, 18, maxDollar, "USDT");
+    }
+    return msg === "" ? null : msg;
   }
 
   function validateTokenAmount(amount: string, decimals: number, maxAmount: BigNumber, tokenName: string) {
@@ -127,8 +148,15 @@ const DepositShare = ({ onStake, disabled, maxLp, maxDai, maxUsdc, maxUsdt, mana
   };
 
   const onClickStake = () => {
-    console.log(`on click ${amountLp}`);
-    onStake({ amount: ethers.utils.parseEther(amountLp), weeks: BigNumber.from(weeks) });
+    console.log(`on click ${amountTokenDai}`);
+    onStake({
+      amountDai: amountTokenDai === "" ? BigNumber.from(0) : ethers.utils.parseEther(amountTokenDai),
+      amountLp: amountLp === "" ? BigNumber.from(0) : ethers.utils.parseEther(amountLp),
+      amountUsdc: amountTokenUsdc === "" ? BigNumber.from(0) : ethers.utils.parseUnits(amountTokenUsdc, 6),
+      amountUsdt: amountTokenUsdt === "" ? BigNumber.from(0) : ethers.utils.parseUnits(amountTokenUsdt, 6),
+      amountDollar: amountTokenDollar === "" ? BigNumber.from(0) : ethers.utils.parseEther(amountTokenDollar),
+      weeks: BigNumber.from(weeks),
+    });
   };
 
   const onClickMaxWeeks = () => {
@@ -193,6 +221,15 @@ const DepositShare = ({ onStake, disabled, maxLp, maxDai, maxUsdc, maxUsdt, mana
         <div>Tokens To Stake</div>
         <div className="tokensContainer">
           <div className="content1">
+            <DepositInput
+              amount={amountTokenDollar}
+              decimals={usdcFix("uAD")}
+              disabled={disabled}
+              maxToken={maxDollar}
+              setAmount={onSetAmountTokenDollar}
+              iconName="uAD"
+              placeHolder="uAD Tokens"
+            />
             <DepositInput
               amount={amountLp}
               decimals={usdcFix("uad3crv")}

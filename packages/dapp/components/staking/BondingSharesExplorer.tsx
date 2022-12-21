@@ -15,6 +15,7 @@ import Icon from "../ui/Icon";
 import Loading from "../ui/Loading";
 
 import { useEffect } from "react";
+import { Contract } from "typechain";
 
 type ShareData = {
   id: number;
@@ -38,13 +39,21 @@ type Model = {
   walletDaiBalance: BigNumber;
   walletUsdcBalance: BigNumber;
   walletUsdtBalance: BigNumber;
+  walletDollarBalance: BigNumber;
   processing: boolean;
 };
 
 type Actions = {
   onWithdrawLp: (payload: { id: number; amount: null | number }) => void;
   onClaimUbq: (id: number) => void;
-  onStake: (payload: { amount: BigNumber; weeks: BigNumber }) => void;
+  onStake: (payload: {
+    amountDai: BigNumber;
+    amountLp: BigNumber;
+    amountUsdc: BigNumber;
+    amountUsdt: BigNumber;
+    amountDollar: BigNumber;
+    weeks: BigNumber;
+  }) => void;
 };
 
 const USD_TO_LP = 0.7460387929;
@@ -55,11 +64,19 @@ export const BondingSharesExplorerContainer = ({ managedContracts, namedContract
   const [, doTransaction] = useTransactionLogger();
   const [balances, refreshBalances] = useBalances();
 
-  const { staking: bonding, masterChef, stakingToken: bondingToken, dollarMetapool: metaPool } = managedContracts;
+  const {
+    directGovernanceFarmer,
+    staking: bonding,
+    masterChef,
+    stakingToken: bondingToken,
+    dollarMetapool: metaPool,
+    dollarToken: dollarToken,
+  } = managedContracts;
   const { usdc: usdcContract, usdt: usdtContract, dai: daiContract } = namedContracts;
 
   const [ctr, setCtr] = useState<number>(1);
-
+  console.log(`directGovernanceFarmer : ${directGovernanceFarmer.deposit}`);
+  console.log(`bonding : ${bonding.deposit}`);
   useAsyncInit(fetchSharesInformation);
   async function fetchSharesInformation() {
     console.log(`calling fetchSharesInformation ctr : ${ctr}`);
@@ -73,6 +90,7 @@ export const BondingSharesExplorerContainer = ({ managedContracts, namedContract
     const walletUsdcBalance = await usdcContract.balanceOf(walletAddress);
     const walletUsdtBalance = await usdtContract.balanceOf(walletAddress);
     const walletDaiBalance = await daiContract.balanceOf(walletAddress);
+    const walletDollarBalance = await dollarToken.balanceOf(walletAddress);
 
     const shares: ShareData[] = [];
     await Promise.all(
@@ -101,7 +119,16 @@ export const BondingSharesExplorerContainer = ({ managedContracts, namedContract
     // refreshBalances();
     console.timeEnd("BondingShareExplorerContainer contract loading");
     // console.log(`balances : ${JSON.stringify(balances)} walletLpBalance :${walletLpBalance} usdc : ${usdcBalance} usdt: ${usdtBalance} dai : ${daiBalance}`);
-    setModel({ processing: false, shares: sortedShares, totalShares, walletLpBalance, walletUsdcBalance, walletUsdtBalance, walletDaiBalance });
+    setModel({
+      processing: false,
+      shares: sortedShares,
+      totalShares,
+      walletLpBalance,
+      walletUsdcBalance,
+      walletUsdtBalance,
+      walletDaiBalance,
+      walletDollarBalance,
+    });
   }
 
   function allLpAmount(id: number): BigNumber {
@@ -152,26 +179,90 @@ export const BondingSharesExplorerContainer = ({ managedContracts, namedContract
     ),
 
     onStake: useCallback(
-      async ({ amount, weeks }) => {
+      async ({ amountDai, amountDollar, amountUsdc, amountUsdt, amountLp, weeks }) => {
         if (!model || model.processing) return;
-        console.log(`Staking ${amount} for ${weeks} weeks`);
+        console.log(`Staking ${amountDai} Dai for ${weeks} weeks`);
         setModel({ ...model, processing: true });
-        doTransaction("Staking...", async () => {});
-        const allowance = await metaPool.allowance(walletAddress, bonding.address);
-        console.log("allowance", ethers.utils.formatEther(allowance));
-        console.log("lpsAmount", ethers.utils.formatEther(amount));
-        if (allowance.lt(amount)) {
-          await performTransaction(metaPool.connect(signer).approve(bonding.address, amount));
-          const allowance2 = await metaPool.allowance(walletAddress, bonding.address);
-          console.log("allowance2", ethers.utils.formatEther(allowance2));
+        const amounts = [];
+        // dai
+        if (amountDai.gt(BigNumber.from(0))) {
+          console.log(`staking dai : ${amountDai}`);
+          await stakingFunction(amountDai, daiContract, weeks);
         }
-        await performTransaction(bonding.connect(signer).deposit(amount, weeks));
+        amounts.push(amountDai);
+        // usdc
+        if (amountUsdc.gt(BigNumber.from(0))) {
+          console.log(`staking usdc : ${amountUsdc}`);
+          await stakingFunction(amountUsdc, usdcContract, weeks);
+        }
+        amounts.push(amountUsdc);
+        // usdt
+        if (amountUsdt.gt(BigNumber.from(0))) {
+          console.log(`staking usdt : ${amountUsdt}`);
+          await stakingFunction(amountUsdt, usdtContract, weeks);
+        }
+        amounts.push(amountUsdt);
+        // uAD dollar
+        if (amountDollar.gt(BigNumber.from(0))) {
+          console.log(`staking uAD : ${amountDollar}`);
+          await stakingFunction(amountDollar, dollarToken, weeks);
+        }
+        amounts.push(amountDollar);
 
-        fetchSharesInformation();
-        refreshBalances();
+        // await performTransaction(directGovernanceFarmer.connect(signer).deposit(amounts, weeks));
+        // fetchSharesInformation();
+        // refreshBalances();
+
+        //test
+
+        // doTransaction("Staking...", async () => {});
+        // const allowance = await metaPool.allowance(walletAddress, bonding.address);
+        // console.log("allowance", ethers.utils.formatEther(allowance));
+        // console.log("lpsAmount", ethers.utils.formatEther(amountLp));
+        // if (allowance.lt(amountLp)) {
+        //   await performTransaction(metaPool.connect(signer).approve(bonding.address, amountLp));
+        //   const allowance2 = await metaPool.allowance(walletAddress, bonding.address);
+        //   console.log("allowance2", ethers.utils.formatEther(allowance2));
+        // }
+        // await performTransaction(bonding.connect(signer).deposit(amountLp, weeks));
+
+        // fetchSharesInformation();
+        // refreshBalances();
+
+        // doTransaction("Staking...", async () => {});
+        // const allowance = await daiContract.allowance(walletAddress, directGovernanceFarmer.address);
+        // console.log("allowance", ethers.utils.formatEther(allowance));
+        // console.log("lpsAmount", ethers.utils.formatEther(amountDai));
+        // if (allowance.lt(amountDai)) {
+        //   await performTransaction(daiContract.connect(signer).approve(directGovernanceFarmer.address, amountDai));
+        //   const allowance2 = await daiContract.allowance(walletAddress, directGovernanceFarmer.address);
+        //   console.log("allowance2", ethers.utils.formatEther(allowance2));
+        // }
+        // const daiAddress = daiContract.address;
+        // await performTransaction(bonding.connect(signer).deposit(daiAddress, amountDai, weeks));
+
+        // fetchSharesInformation();
+        // refreshBalances();
       },
       [model]
     ),
+  };
+
+  const stakingFunction = async (amount: BigNumber, contract: any, weeks: BigNumber) => {
+    doTransaction("Staking...", async () => {});
+    const allowance = await contract.allowance(walletAddress, directGovernanceFarmer.address);
+    console.log("allowance", ethers.utils.formatEther(allowance));
+    console.log("amount", ethers.utils.formatEther(amount));
+    if (allowance.lt(amount)) {
+      await performTransaction(contract.connect(signer).approve(directGovernanceFarmer.address, amount));
+      const allowance2 = await contract.allowance(walletAddress, directGovernanceFarmer.address);
+      console.log("allowance2", ethers.utils.formatEther(allowance2));
+    }
+    const address = contract.address;
+    await performTransaction(directGovernanceFarmer.connect(signer).deposit(address, amount, weeks));
+    // await performTransaction(bonding.connect(signer).deposit(amount, weeks));
+    fetchSharesInformation();
+    refreshBalances();
   };
 
   return <BondingSharesExplorer model={model} actions={actions} />;
@@ -192,6 +283,7 @@ export const BondingSharesInformation = ({
   walletDaiBalance,
   walletUsdcBalance,
   walletUsdtBalance,
+  walletDollarBalance,
 }: Model & Actions) => {
   const totalUserShares = shares.reduce((sum, val) => {
     return sum.add(val.sharesBalance);
@@ -216,6 +308,7 @@ export const BondingSharesInformation = ({
         maxDai={walletDaiBalance}
         maxUsdc={walletUsdcBalance}
         maxUsdt={walletUsdtBalance}
+        maxDollar={walletDollarBalance}
       />
       <table id="Staking">
         <thead>

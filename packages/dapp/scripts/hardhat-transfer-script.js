@@ -49,6 +49,12 @@ async function main() {
       decimals: 18,
       amount: 3,
     },
+    uAD: {
+      token: "0x0F644658510c95CB46955e55D7BA9DDa9E9fBEc6",
+      holder: "0x4007CE2083c7F3E18097aeB3A39bb8eC149a341d",
+      decimals: 18,
+      amount: 1000,
+    },
   };
   const receivingAddress = process.env.recievingAddress || "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266";
   const keys = Object.keys(tokens);

@@ -28,6 +28,13 @@ contract DirectGovernanceFarmer is ReentrancyGuard {
 
     IUbiquityAlgorithmicDollarManager public manager;
 
+    event DepositMultiple(
+        address indexed sender,
+        uint256[4] amount,
+        uint256 durationWeeks,
+        uint256 stakingShareId
+    );
+
     event Deposit(
         address indexed sender,
         address token,
@@ -127,6 +134,110 @@ contract DirectGovernanceFarmer is ReentrancyGuard {
         emit Deposit(msg.sender, token, amount, durationWeeks, stakingShareId);
         
     }
+
+    /**
+     * @dev Deposit into Ubiquity protocol
+     * @notice Stable coins (DAI / USDC / USDT / Ubiquity Dollar) => uAD3CRV-f => Ubiquity StakingShare
+     * @notice STEP 1 : Change (DAI / USDC / USDT / Ubiquity dollar) to 3CRV at uAD3CRV MetaPool
+     * @notice STEP 2 : uAD3CRV-f => Ubiquity StakingShare
+     * @param tokenAmounts Amount of tokens to deposit (For max: `uint256(-1)`) it MUST follow this order [Ubiquity Dollar, DAI, USDC, USDT]
+     * @param durationWeeks Duration in weeks tokens will be locked (1-208)
+     */
+    // function deposit(uint256[4] calldata tokenAmounts, uint256 durationWeeks)
+    //     external
+    //     nonReentrant
+    //     returns (uint256 stakingShareId)
+    // {
+    //     // at least one should be non zero Ubiquity Dollar / DAI / USDC / USDT
+    //     require(
+    //         tokenAmounts[0] > 0 ||
+    //             tokenAmounts[1] > 0 ||
+    //             tokenAmounts[2] > 0 ||
+    //             tokenAmounts[3] > 0,
+    //         "amounts==0"
+    //     );
+    //     require(
+    //         durationWeeks >= 1 && durationWeeks <= 208,
+    //         "duration weeks must be between 1 and 208"
+    //     );
+    //     if (tokenAmounts[0] > 0) {
+    //         IERC20(ubiquityDollar).safeTransferFrom(
+    //             msg.sender,
+    //             address(this),
+    //             tokenAmounts[0]
+    //         );
+    //         IERC20(ubiquityDollar).safeIncreaseAllowance(
+    //             depositZapUbiquityDollar,
+    //             tokenAmounts[0]
+    //         );
+    //     }
+    //     if (tokenAmounts[1] > 0) {
+    //         IERC20(token0).safeTransferFrom(
+    //             msg.sender,
+    //             address(this),
+    //             tokenAmounts[1]
+    //         );
+    //         IERC20(token0).safeIncreaseAllowance(
+    //             depositZapUbiquityDollar,
+    //             tokenAmounts[1]
+    //         );
+    //     }
+    //     //Note, due to USDT implementation, normal transferFrom does not work and have an error of "function returned an unexpected amount of data"
+    //     //require(IERC20(token).transferFrom(msg.sender, address(this), amount), "sender cannot transfer specified fund");
+    //     if (tokenAmounts[2] > 0) {
+    //         IERC20(token1).safeTransferFrom(
+    //             msg.sender,
+    //             address(this),
+    //             tokenAmounts[2]
+    //         );
+    //         IERC20(token1).safeIncreaseAllowance(
+    //             depositZapUbiquityDollar,
+    //             tokenAmounts[2]
+    //         );
+    //     }
+    //     if (tokenAmounts[3] > 0) {
+    //         IERC20(token2).safeTransferFrom(
+    //             msg.sender,
+    //             address(this),
+    //             tokenAmounts[3]
+    //         );
+    //         IERC20(token2).safeIncreaseAllowance(
+    //             depositZapUbiquityDollar,
+    //             tokenAmounts[3]
+    //         );
+    //     }
+    //     address staking = manager.bondingContractAddress();
+    //     address stakingShare = manager.bondingShareAddress();
+
+    //     uint256 lpAmount; //UAD3CRVf
+
+    //     //STEP1: add DAI, USDC, USDT or Ubiquity Dollar into metapool liquidity and get UAD3CRVf
+
+    //     lpAmount = IDepositZap(depositZapUbiquityDollar).add_liquidity(
+    //         ubiquity3PoolLP,
+    //         tokenAmounts,
+    //         0
+    //     );
+
+    //     //STEP2: stake UAD3CRVf to Staking
+    //     //TODO approve token to be transferred to Staking contract
+    //     IERC20(ubiquity3PoolLP).safeIncreaseAllowance(staking, lpAmount);
+    //     stakingShareId = IBondingV2(staking).deposit(lpAmount, durationWeeks);
+
+    //     IBondingShareV2(stakingShare).safeTransferFrom(
+    //         address(this),
+    //         msg.sender,
+    //         stakingShareId,
+    //         1,
+    //         bytes("")
+    //     );
+    //     emit DepositMultiple(
+    //         msg.sender,
+    //         tokenAmounts,
+    //         durationWeeks,
+    //         stakingShareId
+    //     );
+    // }
 
     /**
      * @dev Withdraw from Ubiquity protocol

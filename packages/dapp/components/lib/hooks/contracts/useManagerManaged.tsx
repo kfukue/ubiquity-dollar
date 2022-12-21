@@ -2,6 +2,7 @@ import {
   getBondingShareV2Contract,
   getBondingV2Contract,
   getDebtCouponContract,
+  getDirectGovernanceFarmerContract,
   getDollarMintingCalculatorContract,
   getERC20Contract,
   getICouponsForDollarsCalculatorContract,
@@ -47,6 +48,7 @@ async function connectManagerContracts(manager: Contract, provider: NonNullable<
     dollarToken,
     dollar3poolMarket,
     twapOracle,
+    // directGovernanceFarmer,
     dollarMintCalc,
     creditToken,
     governanceToken,
@@ -63,6 +65,7 @@ async function connectManagerContracts(manager: Contract, provider: NonNullable<
     manager.dollarTokenAddress(),
     manager.stableSwapMetaPoolAddress(),
     manager.twapOracleAddress(),
+    // manager.directGovernanceFarmer(),
     manager.dollarMintingCalculatorAddress(),
     manager.autoRedeemTokenAddress(),
     manager.governanceTokenAddress(),
@@ -79,11 +82,12 @@ async function connectManagerContracts(manager: Contract, provider: NonNullable<
 
   const sushiSwapPoolContract = getSushiSwapPoolContract(sushiSwapPool, provider);
   const ugovUadPairContract = getUniswapV2FactoryContract(await sushiSwapPoolContract.pair(), provider);
-
+  const directGovernanceFarmerAddress = "0xc6b407503de64956ad3cf5ab112ca4f56aa13517";
   return {
     dollarToken: getUbiquityAlgorithmicDollarContract(dollarToken, provider),
     dollarMetapool: getIMetaPoolContract(dollar3poolMarket, provider),
     dollarTwapOracle: getTWAPOracleContract(twapOracle, provider),
+    directGovernanceFarmer: getDirectGovernanceFarmerContract(directGovernanceFarmerAddress, provider),
     dollarMintingCalculator: getDollarMintingCalculatorContract(dollarMintCalc, provider),
     creditToken: getUbiquityCreditContract(creditToken, provider),
     governanceToken: getUbqContract(governanceToken, provider),
